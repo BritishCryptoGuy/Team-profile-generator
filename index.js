@@ -45,12 +45,19 @@ function teamMemberPrompt(input) {
       input,
     ])
     .then((ans) => {
-      if (ans.github) {
-        let { name, id, email, github } = ans;
-        employeeObject.push(new Engineer(name, id, email, github));
-      } else if (ans.school) {
-        let { name, id, email, school } = ans;
-        employeeObject.push(new Intern(name, id, email, school));
+      let inputValidation = Object.values(ans);
+      if (inputValidation.includes("")) {
+        console.log(
+          "Empty input detected, please try inputting information again"
+        );
+      } else {
+        if (ans.github) {
+          let { name, id, email, github } = ans;
+          employeeObject.push(new Engineer(name, id, email, github));
+        } else if (ans.school) {
+          let { name, id, email, school } = ans;
+          employeeObject.push(new Intern(name, id, email, school));
+        }
       }
       buildTeam();
     });
