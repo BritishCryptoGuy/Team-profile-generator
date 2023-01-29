@@ -28,6 +28,10 @@ node index.js
 
 This will then set the Team profile generator in motion!
 
+The following image shows what a team profile generated HTML and CSS page will look like:
+
+![The screenshot displays a generated HTML page. The page includes a jumbotron and multiple visible cards with information on team members as per user input](images/tpgDemoScreenshot.png)
+
 ---
 
 ## License
