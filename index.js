@@ -126,9 +126,17 @@ function initPrompt() {
       },
     ])
     .then((manager) => {
-      let { name, id, email, officeNum } = manager;
-      employeeObject.push(new Manager(name, id, email, officeNum));
-      buildTeam();
+      let inputValidation = Object.values(manager);
+      if (inputValidation.includes("")) {
+        console.log(
+          "Empty input detected, please try inputting information again"
+        );
+        initPrompt();
+      } else {
+        let { name, id, email, officeNum } = manager;
+        employeeObject.push(new Manager(name, id, email, officeNum));
+        buildTeam();
+      }
     });
 }
 
