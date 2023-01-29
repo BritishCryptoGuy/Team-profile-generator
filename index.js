@@ -9,6 +9,8 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./src/page-template.js");
+
+//prompts stored as variables to make code cleaner, each is called when required
 const githubPrompt = {
   name: "github",
   message: "Please input engineers Github Username",
@@ -18,10 +20,12 @@ const schoolPrompt = {
   message: "Please input intern's school",
 };
 
+//Variable that has employee objects added to it as input is given
 const employeeObject = [];
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 
+//teamMemberPrompt is called when user wants to add a team member. It then asks for relevant info and passes said info to correct class constructor. After this the object is stored and the buildTeam function is called again
 function teamMemberPrompt(input) {
   inquirer
     .prompt([
@@ -51,6 +55,7 @@ function teamMemberPrompt(input) {
     });
 }
 
+//buildTeam function is called to check if user wants to add a team member. If they do teamMemberPrompt is called. If they are finished adding team members the render method is called with saved team info and the received HTML is saved to a file.
 function buildTeam() {
   inquirer
     .prompt({
@@ -66,15 +71,21 @@ function buildTeam() {
         return teamMemberPrompt(schoolPrompt);
       }
       console.log("Lets make this HTML!");
-      console.log(outputPath);
       const html = render(employeeObject);
-      fs.writeFile(outputPath, html);
+      if (!fs.existsSync(OUTPUT_DIR)) {
+        fs.mkdirSync(OUTPUT_DIR);
+      }
+      fs.writeFile(outputPath, html, (err) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Your team profile HTML file has been generated!");
+        }
+      });
     });
 }
-// * Create an HTML file using the HTML returned from the `render` function.
-//   * Write it to a file named `team.html` in the `output` folder.
-//   * You can use the provided variable `outputPath` to target this location.
 
+//initPrompt function prompts user to start team generation by inputting manager details. Once input manager details are created and stored, then buildTeam is called to add additional members
 function initPrompt() {
   console.log(
     "Welcome to this Team Profile Generator, please input the requested information."
@@ -105,4 +116,5 @@ function initPrompt() {
     });
 }
 
+//initPrompt is called on node index.js being typed into terminal
 initPrompt();
