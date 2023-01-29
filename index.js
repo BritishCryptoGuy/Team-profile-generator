@@ -9,13 +9,12 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./src/page-template.js");
-
 const githubPrompt = {
-  name: "githubUsername",
+  name: "github",
   message: "Please input engineers Github Username",
 };
 const schoolPrompt = {
-  name: "schoolName",
+  name: "school",
   message: "Please input intern's school",
 };
 
@@ -27,26 +26,27 @@ function teamMemberPrompt(input) {
   inquirer
     .prompt([
       {
-        name: "employeeName",
+        name: "name",
         message: "Please input the employees name:",
       },
       {
-        name: "employeeID",
+        name: "id",
         message: "Please input the employees ID",
       },
       {
-        name: "employeeEmail",
+        name: "email",
         message: "Please input the employees email address",
       },
       input,
     ])
     .then((ans) => {
-      if (ans.githubUsername) {
-        ans.engineer = true;
-      } else {
-        ans.intern = true;
+      if (ans.github) {
+        let { name, id, email, github } = ans;
+        employeeObject.push(new Engineer(name, id, email, github));
+      } else if (ans.school) {
+        let { name, id, email, school } = ans;
+        employeeObject.push(new Intern(name, id, email, school));
       }
-      employeeObject.push(ans);
       buildTeam();
     });
 }
@@ -66,9 +66,14 @@ function buildTeam() {
         return teamMemberPrompt(schoolPrompt);
       }
       console.log("Lets make this HTML!");
-      console.log(employeeObject);
+      console.log(outputPath);
+      const html = render(employeeObject);
+      fs.writeFile(outputPath, html);
     });
 }
+// * Create an HTML file using the HTML returned from the `render` function.
+//   * Write it to a file named `team.html` in the `output` folder.
+//   * You can use the provided variable `outputPath` to target this location.
 
 function initPrompt() {
   console.log(
@@ -77,25 +82,25 @@ function initPrompt() {
   inquirer
     .prompt([
       {
-        name: "managerName",
+        name: "name",
         message: "Please input the team manager's name:",
       },
       {
-        name: "managerID",
+        name: "id",
         message: "Please input the Managers ID",
       },
       {
-        name: "managerEmail",
+        name: "email",
         message: "Please input the Manager's email address",
       },
       {
-        name: "officeNumber",
+        name: "officeNum",
         message: "Please input the office number",
       },
     ])
     .then((manager) => {
-      manager.manager = true;
-      employeeObject.push(manager);
+      let { name, id, email, officeNum } = manager;
+      employeeObject.push(new Manager(name, id, email, officeNum));
       buildTeam();
     });
 }
