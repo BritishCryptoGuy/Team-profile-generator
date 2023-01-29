@@ -7,9 +7,10 @@ const fs = require("fs");
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
+const outputCSS = path.join(OUTPUT_DIR, "style.css");
 
 const render = require("./src/page-template.js");
-
+const customCss = require("./src/custom-css");
 //prompts stored as variables to make code cleaner, each is called when required
 const githubPrompt = {
   name: "github",
@@ -72,6 +73,7 @@ function buildTeam() {
       }
       console.log("Lets make this HTML!");
       const html = render(employeeObject);
+      const css = customCss;
       if (!fs.existsSync(OUTPUT_DIR)) {
         fs.mkdirSync(OUTPUT_DIR);
       }
@@ -80,6 +82,13 @@ function buildTeam() {
           console.log(err);
         } else {
           console.log("Your team profile HTML file has been generated!");
+        }
+      });
+      fs.writeFile(outputCSS, css, (err) => {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Also a custom CSS file has been created!");
         }
       });
     });
