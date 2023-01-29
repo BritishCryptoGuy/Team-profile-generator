@@ -24,7 +24,6 @@ const employeeObject = [];
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 
 function teamMemberPrompt(input, manager) {
-  console.log(employeeObject);
   inquirer
     .prompt([
       {
@@ -41,11 +40,18 @@ function teamMemberPrompt(input, manager) {
       },
       input,
     ])
-    .then((ans) => console.log(ans));
+    .then((ans) => {
+      if (ans.githubUsername) {
+        ans.engineer = true;
+      } else {
+        ans.intern = true;
+      }
+      employeeObject.push(ans);
+      buildTeam();
+    });
 }
 
-function buildTeam(manager) {
-  let managerInfo = manager;
+function buildTeam() {
   inquirer
     .prompt({
       type: "list",
@@ -55,11 +61,12 @@ function buildTeam(manager) {
     })
     .then((ans) => {
       if (ans.addMember === "Engineer") {
-        return teamMemberPrompt(githubPrompt, manager);
+        return teamMemberPrompt(githubPrompt);
       } else if (ans.addMember === "Intern") {
-        return teamMemberPrompt(schoolPrompt, manager);
+        return teamMemberPrompt(schoolPrompt);
       }
       console.log("Lets make this HTML!");
+      console.log(employeeObject);
     });
 }
 
@@ -89,7 +96,7 @@ function initPrompt() {
     .then((manager) => {
       manager.manager = true;
       employeeObject.push(manager);
-      buildTeam(manager);
+      buildTeam();
     });
 }
 
